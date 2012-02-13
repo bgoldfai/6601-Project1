@@ -83,6 +83,12 @@ def depthFirstSearch(problem):
   print "Start's successors:", problem.getSuccessors(problem.getStartState())
   """
   "*** YOUR CODE HERE ***"
+  
+  util.raiseNotDefined()
+
+def breadthFirstSearch(problem):
+  "Search the shallowest nodes in the search tree first. [p 81]"
+  "*** YOUR CODE HERE ***"
   from game import Directions
   s = Directions.SOUTH
   w = Directions.WEST
@@ -159,11 +165,6 @@ def depthFirstSearch(problem):
   move.reverse()
   print str(move)
   return move
-
-def breadthFirstSearch(problem):
-  "Search the shallowest nodes in the search tree first. [p 81]"
-  "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
       
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
