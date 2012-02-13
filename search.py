@@ -62,6 +62,7 @@ def tinyMazeSearch(problem):
   Returns a sequence of moves that solves tinyMaze.  For any other
   maze, the sequence of moves will be incorrect, so only use this for tinyMaze
   """
+  print "ahahaha"
   from game import Directions
   s = Directions.SOUTH
   w = Directions.WEST
@@ -82,7 +83,82 @@ def depthFirstSearch(problem):
   print "Start's successors:", problem.getSuccessors(problem.getStartState())
   """
   "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+  from game import Directions
+  s = Directions.SOUTH
+  w = Directions.WEST
+  n = Directions.NORTH
+  e = Directions.EAST
+  start = [problem.getStartState()]
+  seenpositions = []
+  currentpositions = [start]
+  allLocs=[]
+  found=False
+  goalLoc=[]
+  while currentpositions and not found:
+    nextpositions = []
+    for p in currentpositions:
+      #print "next:"+str(nextpositions)
+      #print "Current:"+str(currentpositions)
+      #print "p:"+str(p)
+      visited=p[0]
+      seenpositions.append(visited)
+      #print "Visited:"+str(visited)
+      #print "Seen:"+str(seenpositions)
+      succ = problem.getSuccessors(visited)
+      #print "succ:"+str(succ)
+      for np in succ:
+        #print np[0]
+        if np[0] in seenpositions: 
+          continue
+        if problem.isGoalState(np[0]) is True:
+          #print "FoundSolution"+str(np)
+          found=True
+          goalLoc=np[0]
+          cur = [list(np),visited]
+          allLocs.append(cur)
+          break
+        #print "haha"
+        nextpositions.append(np)
+        cur = [list(np),visited]
+        allLocs.append(cur)
+    currentpositions = nextpositions
+  moves=[]
+  k=0
+  if not found:
+    print "No solution exists"
+  else:
+    #cur=allLocs.pop()
+    while allLocs:
+      cur=allLocs.pop()
+      if cur[0][0] == goalLoc:
+        #print cur
+        if cur[0][1][0]=='W':
+          moves.append(w)
+        if cur[0][1][0]=='E':
+          moves.append(e)
+        if cur[0][1][0]=='N':
+          moves.append(n)
+        if cur[0][1][0]=='S':
+          moves.append(s)
+        break
+    while allLocs:
+      prev=allLocs.pop()
+      #	print prev
+      if cur[1]==prev[0][0]:
+        cur=prev
+        if prev[0][1][0]=='W':
+          moves.append(w)
+        if prev[0][1][0]=='E':
+          moves.append(e)
+        if prev[0][1][0]=='N':
+          moves.append(n)
+        if prev[0][1][0]=='S':
+          moves.append(s)
+        #print prev
+  move=list(moves)
+  move.reverse()
+  print str(move)
+  return move
 
 def breadthFirstSearch(problem):
   "Search the shallowest nodes in the search tree first. [p 81]"
