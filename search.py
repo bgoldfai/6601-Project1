@@ -201,55 +201,66 @@ def uniformCostSearch(problem):
   "*** YOUR CODE HERE ***"
   print "Start:", problem.getStartState()
   
-  currentPosition = problem.getStartState()
-  if(problem.isGoalState(currentPosition)):
+  startPose = problem.getStartState()
+  if(problem.isGoalState(startPose)):
     return []
   
   frontier = util.PriorityQueue()
+  frontier.push([startPose, "Head", 0], 0)
   explored = list()
   path = util.Stack()
-  explored.append(currentPosition)
-  
-  for position in problem.getSuccessors(currentPosition):
-    frontier.push(position, position[2])
-    print "initial frontier: ", position[0]  
 
   while not frontier.isEmpty():
     
     currentPosition = frontier.pop()
-    explored.append(currentPosition[0])
-    print "At: ", currentPosition[0]
-    path.push(currentPosition)
+    if currentPosition[1] <> "Head":
+      path.push(currentPosition)
 
-    for new in problem.getSuccessors(currentPosition[0]):
-      if problem.isGoalState(new[0]):
+    print "At: ", currentPosition[0] , " ", currentPosition[1]
+
+    if problem.isGoalState(currentPosition[0]):
         print "found goal!"
         p = util.Stack()
-        p.push(currentPosition[1])
-        p.push(new[1])
-        current = currentPosition
+        
+        
+        previous = currentPosition
+        toPush = path.pop()
         while not path.isEmpty():
-          previous = current
-          
-          done = False
-          while previous not in problem.getSuccessors(current[0]) and not done:
-            if not path.isEmpty():
-              current = path.pop()
-            else:
-              done = True
-          if done:    
-            print problem.getStartState()
-          else:
-            p.push(current[1])
-            print current[1]
+          found = False
+          while not found:
+            for child in problem.getSuccessors(toPush[0]):
+              if(child[0] == previous[0]):
+                found = True
+                p.push(previous)
+                previous = toPush
+                break
+              else:
+                found = False
+
+            if path.isEmpty():
+              p.push(previous)
+              break
+            
+            toPush = path.pop()
+        
         
         a = list()
         while not p.isEmpty():
           tmp = p.pop()
-          print tmp
-          a.append(tmp)
+          print tmp[1]
+          a.append(tmp[1])
+        print "Send plan"
         return a
-      if new[0] not in explored:
+
+    explored.append(currentPosition)
+    for new in problem.getSuccessors(currentPosition[0]):
+      notExplored = True
+      for node in explored:
+        if node[0] == new[0]:
+          notExplored = False
+          if new[2] < node[2]:
+            frontier.push(new, new[2])
+      if notExplored:
         frontier.push(new, new[2])
 
   return []
@@ -266,56 +277,66 @@ def aStarSearch(problem, heuristic=nullHeuristic):
   "*** YOUR CODE HERE ***"
   print "Start:", problem.getStartState()
   
-  currentPosition = problem.getStartState()
-  if(problem.isGoalState(currentPosition)):
+  startPose = problem.getStartState()
+  if(problem.isGoalState(startPose)):
     return []
   
   frontier = util.PriorityQueue()
+  frontier.push([startPose, "Head", 0], heuristic(startPose, problem))
   explored = list()
   path = util.Stack()
-  explored.append(currentPosition)
-  
-  for position in problem.getSuccessors(currentPosition):
-    frontier.push(position, position[2]+heuristic(position[0], problem))
-    print "initial frontier: ", position[0]  
 
   while not frontier.isEmpty():
     
     currentPosition = frontier.pop()
-    explored.append(currentPosition[0])
-    print "At: ", currentPosition[0]
-    path.push(currentPosition)
+    if currentPosition[1] <> "Head":
+      path.push(currentPosition)
+
+    print "At: ", currentPosition[0] , " ", currentPosition[1]
 
     if problem.isGoalState(currentPosition[0]):
-      print "found goal!"
-      p = util.Stack()
-      p.push(currentPosition[1])
-      current = currentPosition
-      while not path.isEmpty():
-        previous = current
+        print "found goal!"
+        p = util.Stack()
         
-        done = False
-        while previous not in problem.getSuccessors(current[0]) and not done:
-          print "here"
-          if not path.isEmpty():
-            current = path.pop()
-          else:
-            done = True
-        if done:    
-          print problem.getStartState()
-        else:
-          p.push(current[1])
-          print current[1]
-      
-      a = list()
-      while not p.isEmpty():
-        tmp = p.pop()
-        print tmp
-        a.append(tmp)
-      return a
-    
+        
+        previous = currentPosition
+        toPush = path.pop()
+        while not path.isEmpty():
+          found = False
+          while not found:
+            for child in problem.getSuccessors(toPush[0]):
+              if(child[0] == previous[0]):
+                found = True
+                p.push(previous)
+                previous = toPush
+                break
+              else:
+                found = False
+
+            if path.isEmpty():
+              p.push(previous)
+              break
+            
+            toPush = path.pop()
+        
+        
+        a = list()
+        while not p.isEmpty():
+          tmp = p.pop()
+          print tmp[1]
+          a.append(tmp[1])
+        print "Send plan"
+        return a
+
+    explored.append(currentPosition)
     for new in problem.getSuccessors(currentPosition[0]):
-      if new[0] not in explored:
+      notExplored = True
+      for node in explored:
+        if node[0] == new[0]:
+          notExplored = False
+          if new[2] < node[2]:
+            frontier.push(new, new[2]+heuristic(new[0], problem))
+      if notExplored:
         frontier.push(new, new[2]+heuristic(new[0], problem))
 
   return []
