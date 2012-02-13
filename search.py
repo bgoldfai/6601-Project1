@@ -282,7 +282,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     return []
   
   frontier = util.PriorityQueue()
-  frontier.push([startPose, "Head", 0], heuristic(startPose, problem))
+  frontier.push([startPose, "Head", 0], problem.getCostOfActions([])+heuristic(startPose, problem))
   explored = list()
   path = util.Stack()
 
