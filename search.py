@@ -218,38 +218,37 @@ def uniformCostSearch(problem):
     
     currentPosition = frontier.pop()
     explored.append(currentPosition[0])
-    
+    print "At: ", currentPosition[0]
     path.push(currentPosition)
 
-    if problem.isGoalState(currentPosition[0]):
-      print "found goal!"
-      p = util.Stack()
-      p.push(currentPosition[1])
-      current = currentPosition
-      while not path.isEmpty():
-        previous = current
-        
-        done = False
-        while previous not in problem.getSuccessors(current[0]) and not done:
-          print "here"
-          if not path.isEmpty():
-            current = path.pop()
-          else:
-            done = True
-        if done:    
-          print problem.getStartState()
-        else:
-          p.push(current[1])
-          print current[1]
-      
-      a = list()
-      while not p.isEmpty():
-        tmp = p.pop()
-        print tmp
-        a.append(tmp)
-      return a
-    
     for new in problem.getSuccessors(currentPosition[0]):
+      if problem.isGoalState(new[0]):
+        print "found goal!"
+        p = util.Stack()
+        p.push(currentPosition[1])
+        p.push(new[1])
+        current = currentPosition
+        while not path.isEmpty():
+          previous = current
+          
+          done = False
+          while previous not in problem.getSuccessors(current[0]) and not done:
+            if not path.isEmpty():
+              current = path.pop()
+            else:
+              done = True
+          if done:    
+            print problem.getStartState()
+          else:
+            p.push(current[1])
+            print current[1]
+        
+        a = list()
+        while not p.isEmpty():
+          tmp = p.pop()
+          print tmp
+          a.append(tmp)
+        return a
       if new[0] not in explored:
         frontier.push(new, new[2])
 
